@@ -1,5 +1,6 @@
 const swaggerJsdoc = require('swagger-jsdoc');
 
+
 // Swagger configuration
 const options = {
   definition: {
@@ -9,14 +10,24 @@ const options = {
       version: '1.0.0',
       description: 'A simple API using Swagger for documentation',
     },
-    servers: [
+
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+
+    security: [
       {
-        url: `http://localhost:${process.env.PORT}`,
-        description: 'Development server',
+        bearerAuth: [],
       },
     ],
   },
-  apis: ['./routes/*.js'], // Path to the API docs
+  apis: ['./controllers/*.js'], // Path to the API docs
 };
 
 const swaggerSpec = swaggerJsdoc(options);

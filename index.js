@@ -2,6 +2,8 @@ const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 const authRoutes = require("./routes/auth");
+const uploadRoutes = require("./routes/upload");
+const bookRoutes = require("./routes/book");
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 
@@ -24,6 +26,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use("/api",uploadRoutes);
+app.use("/api",bookRoutes);
 
 app.listen(PORT,() => {
     console.log(`App started on PORT: ${PORT}`);
