@@ -21,6 +21,10 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
 
+app.get("/",(req,res) => {
+ res.send('server is up and running!')
+});
+
 // Swagger setup
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
