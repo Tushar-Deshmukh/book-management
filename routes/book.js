@@ -10,10 +10,12 @@ const {
   getAllBooks,
   updateBook,
   deleteBook,
+  getAllCategories,
 } = require("../controllers/book");
 
 router.post("/add-book-category", addBookCategory);
 router.post("/add-book-subcategory", addBookSubCategory);
+router.get("/categories", getAllCategories);
 router.get("/getAllSubcategories", getAllSubCategoriesByCategoryId);
 router.post("/add-book", checkLogin, addBook);
 router.get("/get-all-books", checkLogin, getAllBooks);

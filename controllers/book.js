@@ -171,6 +171,53 @@ exports.addBookSubCategory = async (req, res) => {
 
 /**
  * @swagger
+ * /api/categories:
+ *   get:
+ *     summary: Retrieve all categories
+ *     tags:
+ *       - Book Categories
+ *     responses:
+ *       200:
+ *         description: List of all categories
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                     example: 645f1c2b8a1b3c2d5f7d8e9f
+ *                   name:
+ *                     type: string
+ *                     example: Technology
+ *                   description:
+ *                     type: string
+ *                     example: All tech-related content
+ *       500:
+ *         description: Internal server error
+ */
+
+exports.getAllCategories = async (req, res) => {
+  try {
+    const categories = await BookCategory.find({});
+
+    return res.status(200).json({
+      success: true,
+      data: categories,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+/**
+ * @swagger
  * /api/getAllSubcategories:
  *   get:
  *     summary: Get all subcategories by category ID
