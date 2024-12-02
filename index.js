@@ -6,6 +6,7 @@ const uploadRoutes = require("./routes/upload");
 const bookRoutes = require("./routes/book");
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
+const cors = require('cors');
 
 
 const app = express();
@@ -18,6 +19,7 @@ connectDB();
 
 //middleware
 app.use(express.json());
+app.use(cors());
 
 const PORT = process.env.PORT || 5000;
 
