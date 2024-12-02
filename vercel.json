@@ -11,10 +11,5 @@
       "src": "/(.*)",
       "dest": "index.js"
     }
-  ],
-  "rewrites": [
-    { "source": "/api-docs", "destination": "/api-docs/index.html" },
-    { "source": "/swagger-ui-assets/:path*", "destination": "/swagger-ui-assets/:path*" },
-    { "source": "/swagger.json", "destination": "/swagger.json" }
   ]
 }
