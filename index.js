@@ -1,7 +1,7 @@
 const express = require("express");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./swagger");
-const path = require('path');
+const path = require("path");
 const authRoutes = require("./routes/auth");
 const uploadRoutes = require("./routes/upload");
 const bookRoutes = require("./routes/book");
@@ -28,17 +28,20 @@ app.get("/", (req, res) => {
 });
 
 // Serve Swagger UI assets manually
-app.use('/swagger-ui-assets', express.static(path.join(__dirname, 'node_modules/swagger-ui-dist')));
+app.use(
+  "/swagger-ui-assets",
+  express.static(path.join(__dirname, "node_modules/swagger-ui-dist"))
+);
 
 // Serve Swagger JSON dynamically
-app.get('/swagger.json', (req, res) => {
-  res.setHeader('Content-Type', 'application/json');
+app.get("/swagger.json", (req, res) => {
+  res.setHeader("Content-Type", "application/json");
   res.send(swaggerSpec);
 });
 
 // Serve Swagger UI
-app.get('/api-docs', (req, res) => {
-    res.send(`
+app.get("/api-docs", (req, res) => {
+  res.send(`
       <!DOCTYPE html>
       <html>
         <head>
@@ -65,7 +68,7 @@ app.get('/api-docs', (req, res) => {
         </body>
       </html>
     `);
-  });
+});
 
 // Swagger setup
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
