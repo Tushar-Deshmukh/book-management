@@ -12,6 +12,10 @@ const bookSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    isFavourite:{
+      type:Boolean,
+      default:false
+    },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "BookCategory",

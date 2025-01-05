@@ -378,6 +378,178 @@ exports.addBook = async (req, res) => {
 
 /**
  * @swagger
+ * /api/add-to-favourite:
+ *   patch:
+ *     summary: Mark a book as a favorite
+ *     tags:
+ *       - Books
+ *     security:
+ *       - bearerAuth: []  # This route requires the bearer token for authorization
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               bookId:
+ *                 type: string
+ *                 description: The ID of the book to mark as favorite
+ *                 example: "60b6d9f90a0f5b001c8f9ec1"
+ *     responses:
+ *       200:
+ *         description: Book successfully marked as favorite
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Book marked as favorite successfully"
+ *       400:
+ *         description: Bad Request - Validation errors or missing fields
+ *       401:
+ *         description: Unauthorized - Invalid token or no token provided
+ *       404:
+ *         description: Book not found
+ *       500:
+ *         description: Internal Server Error
+ */
+
+exports.addToFavourite = async (req, res) => {
+  try {
+    const { bookId } = req.body;
+    const userId = req.user?._id;
+
+    // Validate the input
+    if (!bookId) {
+      return res.status(400).json({
+        success: false,
+        message: "Book ID is required!",
+      });
+    }
+
+    // Find the book by ID
+    const book = await Book.findOne({ _id: bookId, user: userId });
+
+    if (!book) {
+      return res.status(404).json({
+        success: false,
+        message: "Book not found!",
+      });
+    }
+
+    // Update the `isFavourite` field
+    book.isFavourite = true;
+    await book.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Book marked as favorite successfully",
+      book,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+/**
+ * @swagger
+ * /api/my-favourite-books:
+ *   get:
+ *     summary: Get all favorite books of the user
+ *     tags:
+ *       - Books
+ *     security:
+ *       - bearerAuth: []  # This route requires the bearer token for authorization
+ *     responses:
+ *       200:
+ *         description: List of user's favorite books
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Favourite books retrieved successfully"
+ *                 books:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: "60b6d9f90a0f5b001c8f9ec1"
+ *                       bookName:
+ *                         type: string
+ *                         example: "The Great Gatsby"
+ *                       authorName:
+ *                         type: string
+ *                         example: "F. Scott Fitzgerald"
+ *                       category:
+ *                         type: string
+ *                         example: "Literature"
+ *                       subCategory:
+ *                         type: string
+ *                         example: "Classics"
+ *                       imageUrl:
+ *                         type: string
+ *                         example: "https://example.com/book-image.jpg"
+ *                       isFavourite:
+ *                         type: boolean
+ *                         example: true
+ *       401:
+ *         description: Unauthorized - Invalid token or no token provided
+ *       500:
+ *         description: Internal Server Error
+ */
+
+exports.myFavouriteBooks = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // Fetch all books where user matches and isFavourite is true
+    const favouriteBooks = await Book.find({
+      user: userId,
+      isFavourite: true,
+    });
+
+    if (!favouriteBooks || favouriteBooks.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No favorite books found!",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Favourite books retrieved successfully",
+      books: favouriteBooks,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+/**
+ * @swagger
  * /api/get-all-books:
  *   get:
  *     summary: Get all books added by the authenticated user
